@@ -22,7 +22,6 @@ postdisplay['volume-task'] = function (taskName) {
 !function () {
 	$(document).on('input', 'input[name=volume]', function() {
 		// grab new volume from input
-		var $wrapper   = $(document.createElement('span'));
 		var volRef     = setup.vol.options;
 		var change     = $('input[name=volume]').val();
 		var newVol     = change / volRef.rangeMax;

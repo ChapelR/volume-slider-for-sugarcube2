@@ -1,6 +1,6 @@
 ### Volume Slider Control for Sugarcube 2
 
-Throw the code of volume-slider.js in a script-tagged passage (Twine 1) or in your story's JavaSCript area (Twine 2).  Adds one new macro, `<<volume>>`, which creates a volume slider that controls the volume of all sound playing via SugarCube's audio macros in real-time.
+Throw the code of volume-slider.js in a script-tagged passage (Twine 1) or in your story's JavaScript area (Twine 2).  Adds one new macro, `<<volume>>`, which creates a volume slider that controls the volume of all sound playing via SugarCube's audio macros in real-time.
 
 #### Options
 
@@ -15,14 +15,14 @@ setup.vol.options = {
 };
 ```
 
-**current option**: Named current because it does a couple things throughout the script, but you can alter it to set what position volume slider starts in.  It'll also set the starting volume level, but that effect is overridden by `<<masteraudio>>` macros.
+* **`current` option**: Named current because it does a couple of things throughout the script, but you can alter it to set what position volume slider starts at.  It'll also set the starting volume level, but that effect can be overwritten by `<<masteraudio>>` macros.
 
-**rageMax option**: Sets the length of the slider.  Default is 10, but it can get up to around 100 before things start getting weird.
+* **`rangeMax` option**: Sets the length of the slider.  Longer sliders will give the player finer control over the volume.
 
-**step option**: Controls the 'step' attribute of the range input.  Makes the slider feel smoother at lower values, and clickier? at higher values.
+* **`step` option**: Controls the 'step' attribute of the range input.  Makes the slider settle on values at this increment.
 
 #### Styling
 
 The volume slider sits in a span with the class `.macro-volume`.  The slider itself has a `name` attribute of `volume` and an id of `#volume-control`, so you can use those selectors to style it.
 
-You might want to check out [range.css](http://danielstern.ca/range.css/#/) to make styling it to match your story a breeze.
+You might want to check out [range.css](http://danielstern.ca/range.css/#/) for your styling needs.
