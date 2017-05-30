@@ -26,9 +26,8 @@ postdisplay['volume-task'] = function (taskName) {
 		var change     = $('input[name=volume]').val();
 		var newVol     = change / volRef.rangeMax;
 		volRef.current = newVol.toFixed(2);
-		// console.log(newVol + ' : ' + volRef.current);
 
-		// change volume; set slider poisition
+		// change volume; set slider position
 		SimpleAudio.volume = volRef.current;
 		setup.vol.last = change;
 	});
