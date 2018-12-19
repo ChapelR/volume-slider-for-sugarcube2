@@ -1,6 +1,8 @@
 ### Volume Slider Control for Sugarcube 2
 
-Throw the code of volume-slider.js in a script-tagged passage (Twine 1) or in your story's JavaScript area (Twine 2).  Adds one new macro, `<<volume>>`, which creates a volume slider that controls the volume of all sound playing via SugarCube's audio macros in real-time.
+Now compatible with the audio system overhaul introduced in SugarCube 2.28.0, and with settings API integration for SugarCube 2.26 and newer. (Thanks to Greyelf for bringing these issues to my attention).
+
+Throw the code of `volume-slider.min.js` (or `volume-slider.js` if you want to edit some of the options) in a script-tagged passage (Twine 1) or in your story's JavaScript area (Twine 2).  Adds one new macro, `<<volume>>`, which creates a volume slider that controls the volume of all sound playing via SugarCube's audio macros in real-time.
 
 #### Options
 
@@ -9,9 +11,10 @@ This script comes with a few options.  You can change them via the options objec
 ```javascript
 // options object
 setup.vol.options = {
-	current  : 10,
-	rangeMax : 10,
-	step     : 1
+	current  : 100,
+	rangeMax : 100,
+	step     : 1,
+    setting  : true
 };
 ```
 
@@ -19,7 +22,9 @@ setup.vol.options = {
 
 * **`rangeMax` option**: Sets the length of the slider.  Longer sliders will give the player finer control over the volume.
 
-* **`step` option**: Controls the 'step' attribute of the range input.  Makes the slider settle on values at this increment.
+* **`step` option**: Controls the 'step' attribute of the range input.  Makes the slider settle on values at this increment.  
+
+* **`setting` option**: Adds a volume slider to the settings API modal. If this is all you want, I recommend just using the example here: http://www.motoslave.net/sugarcube/2/docs/#setting-api-method-addrange
 
 #### Styling
 
