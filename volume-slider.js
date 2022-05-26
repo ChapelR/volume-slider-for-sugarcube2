@@ -4,6 +4,10 @@
 /*
     Changelog:
 
+    v1.1.1:
+      - Removed compatiblity to make it clear what should be updated
+      - fixed not saving to API
+
     v1.1.0:
       - Fixed compatiblity issues with SugarCube version 2.28 (still compatible with older versions, too).
       - Added settings API integration for SugarCube 2.26.
@@ -14,118 +18,75 @@
 */
 
 (function () {
-
-    var vol = {};
-
-    // options object
-    var options = {
-        current  : 100,
-        rangeMax : 100,
-        step     : 1,
-        setting  : true
-    };
-
-    vol.last = options.current;
-    vol.start = vol.last / options.rangeMax;
-
-    function setVolume (val) {
-        // fix for SugarCube 2.28 and higher
-        if (typeof val !== 'number') {
-            val = Number(val);
-        }
-        if (Number.isNaN(val) || val < 0) {
-            val = 0;
-        }
-        if (val > 1) {
-            val = 1;
-        }
-
-        try {
-            if (SimpleAudio) {
-                if (typeof SimpleAudio.volume === 'function') {
-                    SimpleAudio.volume(val);
-                } else {
-                    SimpleAudio.volume = val;
-                }
-            } else {
-                throw new Error('Cannot access audio API.');
-            }
-        } catch (err) {
-            // fall back to the wikifier if we have to
-            console.error(err.message, err);
-            $.wiki('<<masteraudio volume ' + val + '>>');
-        } finally {
-            return val;
-        }
-    }
-
-    postdisplay['volume-task'] = function (taskName) {
-        delete postdisplay[taskName];
-        setVolume(vol.start.toFixed(2));
-    }
-
-    $(document).on('input', 'input[name=volume]', function() {
-        // grab new volume from input
-        var change      = $('input[name=volume]').val();
-        var newVol      = change / options.rangeMax;
-        options.current = newVol.toFixed(2);
-
-        // change volume; set slider position
-        setVolume(options.current);
-        vol.last = change;
+    Setting.addRange('volume', {
+        label : 'Volume: ',
+        min : 0,
+        max : 100,
+        step : 1,
+        default : 50,
+        onInit : updateVolume,
+        onChange : updateVolume
     });
 
-    Macro.add('volume', {
-        handler : function () {
-            
-            // set up variables
-            var $wrapper  = $(document.createElement('span'));
-            var $slider   = $(document.createElement('input'));
-            var className = 'macro-' + this.name;
-            
-            // create range input
-            $slider
-                .attr({
-                    id    : 'volume-control',
-                    type  : 'range',
-                    name  : 'volume',
-                    min   : '0',
-                    max   : options.rangeMax,
-                    step  : options.step,
-                    value : vol.last
-                });
-            // class '.macro-volume' and id '#volume-control' for styling
-                
-            // output
-            $wrapper
-                .append($slider)
-                .addClass(className)
-                .appendTo(this.output);
-        }
-    });
+	// Function to update the volume level.
+	function setVolume (val) {
+		if (typeof val !== 'number') val = Number(val);
+		if (Number.isNaN(val) || val < 0) val = 0.5;
+		if (val > 1) val = 1;
+		settings.volume = val * 100;
+		Setting.save();
 
-    if (options.setting) {
-        // settings API integration, for SugarCube 2.26 and higher
-        if (Setting && Setting.addRange && typeof Setting.addRange === 'function') {
-            
-            function settingsVol () {
-                var newVol = settings.volume / options.rangeMax;
-                options.current = newVol.toFixed(2);
-                setVolume(options.current);
-            }
+		if ($("input[name='volume']").val() != settings.volume) {
+			$("input[name='volume']").val(settings.volume);
+		}
+		try {
+			if (SimpleAudio) {
+				if (typeof SimpleAudio.volume === 'function') {
+					SimpleAudio.volume(val);
+				} else {
+					SimpleAudio.volume = val;
+				}
+				return val;
+			} else {
+				throw new Error('Cannot access audio API.');
+			}
+		} catch (err) {
+			// Fall back to the wikifier if we have to.
+			console.error(err.message, err);
+			$.wiki('<<masteraudio volume ' + val + '>>');
+			return val;
+		}
+	}
 
-            Setting.addRange('volume', {
-                label : 'Volume: ',
-                min : 0,
-                max : options.rangeMax,
-                step : options.step,
-                default : options.current,
-                onInit : settingsVol,
-                onChange : settingsVol
-            });
-        } else {
-            console.error('This version of SugarCube does not include the `Settings.addRange()` method; please try updating to the latest version of SugarCube.')
-        }
-    }
+	// Grab volume level changes from the volume slider.
+	$(document).on('input', "input[name='volume']", function() {
+		var change = parseInt($("input[name='volume']").val());
+		setVolume(change / 100);
+	});
 
+	// Create the <<volume>> macro.
+	Macro.add('volume', {
+		handler : function () {
+			var wrapper = $(document.createElement('span'));
+			var slider = $(document.createElement('input'));
+			var className = 'macro-' + this.name;
+			slider.attr({
+				id		: 'volume-control',
+				type	: 'range',
+				name	: 'volume',
+				min		: 0,
+				max		: 100,
+				step	: 1,
+				value	: settings.volume
+			});
+			// Class '.macro-volume' and ID '#volume-control' for styling the slider
+			wrapper.append(slider).addClass(className).appendTo(this.output);
+		}
+	});
+
+	function updateVolume () {
+		setVolume(settings.volume / 100);
+	}
+
+	
 }());
