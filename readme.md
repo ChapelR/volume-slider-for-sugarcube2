@@ -1,6 +1,6 @@
 ### Volume Slider Control for Sugarcube 2
 
-Now compatible with the audio system overhaul introduced in SugarCube 2.28.0, and with settings API integration for SugarCube 2.26 and newer. (Thanks to Greyelf for bringing these issues to my attention).
+**NOTE**: It's recommended you [use this fork by SjoerdHekking](https://github.com/SjoerdHekking/volume-slider-for-sugarcube2) if you are using SugarCube v2.28.0 *or higher*. This older code is intended only for people stuck on older versions of SugarCube. 
 
 Throw the code of `volume-slider.min.js` (or `volume-slider.js` if you want to edit some of the options) in a script-tagged passage (Twine 1) or in your story's JavaScript area (Twine 2).  Adds one new macro, `<<volume>>`, which creates a volume slider that controls the volume of all sound playing via SugarCube's audio macros in real-time.
 
